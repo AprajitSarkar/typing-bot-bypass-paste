@@ -1,0 +1,1 @@
+# typing-bot-bypass-paste
