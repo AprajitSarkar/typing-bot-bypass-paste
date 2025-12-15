@@ -44,8 +44,8 @@
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/AprajitSarkar/TypingBot.git
-cd TypingBot
+git clone https://github.com/AprajitSarkar/typing-bot-bypass-paste.git
+cd typing-bot-bypass-paste
 ```
 
 ### Step 2: Install Dependencies
