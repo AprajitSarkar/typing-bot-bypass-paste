@@ -327,7 +327,7 @@ class FloatingTypingBot:
                               bg=self.colors['surface'], fg=self.colors['primary'],
                               font=('Segoe UI', 8, 'bold'), cursor='hand2')
         github_link.pack(side='left')
-        github_link.bind('<Button-1>', lambda e: webbrowser.open('https://github.com/AprajitSarkar'))
+        github_link.bind('<Button-1>', lambda e: webbrowser.open('https://github.com/AprajitSarkar/typing-bot-bypass-paste'))
         
     def start_drag(self, event):
         self.dragging = True
