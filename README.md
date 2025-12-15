@@ -179,10 +179,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Developer
 
-**Developed by Jitu Sarkar**
+**Developed by Aprajit Sarkar**
 
-- 📷 Instagram: [@jitusarkar21](https://instagram.com/jitusarkar21)
+- 📷 Instagram: [AprajitSarkar](https://instagram.com/jitusarkar21)
 - 🐙 GitHub: [@AprajitSarkar](https://github.com/AprajitSarkar)
+
 
 ## 🤝 Contributing
 
