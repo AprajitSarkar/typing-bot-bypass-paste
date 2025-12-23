@@ -1,0 +1,17 @@
+{
+    "current_version": "2.0.0",
+    "version_name": "Material UI Edition",
+    "release_date": "2025-12-24",
+    "features": [
+        "Bangla Language Support",
+        "Material Design 3 UI",
+        "Dark Mode",
+        "Settings Persistence",
+        "Live Text Highlighting",
+        "Clipboard Protection"
+    ],
+    "changelog": {
+        "2.0.0": "Major UI overhaul with Material Design 3, Bangla support, and dark mode",
+        "1.0.0": "Initial release with basic typing functionality"
+    }
+}

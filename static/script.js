@@ -8,9 +8,8 @@ class TypingBot {
         this.typingSpeed = 100;
 
         this.initializeElements();
-        this.loadSettings();
         this.attachEventListeners();
-        this.applySettings();
+        this.loadVersion(); // Load version info
     }
 
     initializeElements() {
@@ -82,16 +81,44 @@ class TypingBot {
 
         this.saveSettings();
         this.showNotification(this.isDarkMode ? '🌙 Dark mode enabled' : '☀️ Light mode enabled');
+        this.saveSettings(); // Save to file
     }
 
-    loadSettings() {
-        const savedSpeed = localStorage.getItem('typingSpeed');
-        const savedDarkMode = localStorage.getItem('darkMode');
-        const savedText = localStorage.getItem('lastText');
+    async loadSettings() {
+        try {
+            const response = await fetch('/api/settings');
+            const settings = await response.json();
 
-        if (savedSpeed) this.typingSpeed = parseInt(savedSpeed);
-        if (savedDarkMode === 'true') this.isDarkMode = true;
-        if (savedText) this.currentText = savedText;
+            this.typingSpeed = settings.speed || 100;
+            this.isDarkMode = settings.darkMode || false;
+            this.currentText = settings.lastText || '';
+        } catch (error) {
+            console.error('Failed to load settings:', error);
+            // Use defaults
+            this.typingSpeed = 100;
+            this.isDarkMode = false;
+            this.currentText = '';
+        }
+    }
+
+    async saveSettings() {
+        const settings = {
+            speed: this.typingSpeed,
+            darkMode: this.isDarkMode,
+            lastText: this.textInput.value
+        };
+
+        try {
+            await fetch('/api/settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(settings)
+            });
+        } catch (error) {
+            console.error('Failed to save settings:', error);
+        }
     }
 
     applySettings() {
@@ -322,8 +349,30 @@ class TypingBot {
             this.notificationToast.classList.remove('show');
         }, 3000);
     }
+
+    async loadVersion() {
+        try {
+            const response = await fetch('/api/version');
+            const data = await response.json();
+
+            const versionText = document.getElementById('versionText');
+            if (versionText && data.current_version) {
+                versionText.textContent = `v${data.current_version}`;
+
+                // Update window title if possible
+                if (data.version_name) {
+                    document.title = `TypingBot v${data.current_version} - ${data.version_name}`;
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load version:', error);
+        }
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    new TypingBot();
+document.addEventListener('DOMContentLoaded', async () => {
+    const app = new TypingBot();
+    // Wait for settings to load before applying
+    await app.loadSettings();
+    app.applySettings();
 });
