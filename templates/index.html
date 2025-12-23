@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TypingBot - Bypass Text Pasting</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="title">
+                <span class="material-symbols-outlined">keyboard</span>
+                <h1>TypingBot</h1>
+            </div>
+            <div class="header-actions">
+                <button id="darkModeToggle" class="icon-btn" aria-label="Toggle dark mode">
+                    <span class="material-symbols-outlined">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Card -->
+        <div class="card main-card">
+            <!-- Text Input Section -->
+            <div class="section">
+                <label class="section-label">Text to Type</label>
+                <textarea id="textInput" class="text-input"
+                    placeholder="Type or paste text here (English, Bangla, or mixed)..." rows="5"></textarea>
+                <div class="input-actions">
+                    <button id="pasteBtn" class="btn btn-secondary">
+                        <span class="material-symbols-outlined">content_paste</span>
+                        Paste
+                    </button>
+                    <button id="clearBtn" class="btn btn-text">
+                        <span class="material-symbols-outlined">delete</span>
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Speed Control -->
+            <div class="section">
+                <label class="section-label">Typing Speed</label>
+                <div class="speed-control">
+                    <input type="range" id="speedSlider" min="1" max="500" value="100" class="slider">
+                    <div class="speed-display">
+                        <span id="speedValue">100</span>
+                        <span class="unit">WPS</span>
+                    </div>
+                </div>
+                <div class="speed-labels">
+                    <span>Slow</span>
+                    <span>Fast</span>
+                    <span>Ultra-fast</span>
+                </div>
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="section">
+                <div class="control-buttons">
+                    <button id="startBtn" class="btn btn-primary">
+                        <span class="material-symbols-outlined">play_arrow</span>
+                        Start Typing
+                    </button>
+                    <button id="pauseBtn" class="btn btn-tertiary" disabled>
+                        <span class="material-symbols-outlined">pause</span>
+                        Pause
+                    </button>
+                    <button id="stopBtn" class="btn btn-error" disabled>
+                        <span class="material-symbols-outlined">stop</span>
+                        Stop
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Preview -->
+            <div id="livePreview" class="live-preview" style="display: none;">
+                <div class="preview-label">Typing...</div>
+                <div class="preview-text">
+                    <span id="prevChar" class="prev-char"></span>
+                    <span id="currentChar" class="current-char"></span>
+                    <span id="nextChars" class="next-chars"></span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions">
+                <span class="material-symbols-outlined">info</span>
+                <p>Type/Paste text → Set speed → Press Start → Position cursor (Auto-detects language)</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Developed by <a href="https://instagram.com/jitusarkar21" target="_blank">Aprajit</a> |
+                <a href="https://github.com/AprajitSarkar/typing-bot-bypass-paste" target="_blank">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Countdown Modal -->
+    <div id="countdownModal" class="modal">
+        <div class="modal-content countdown">
+            <p>Position your cursor</p>
+            <div id="countdownNumber" class="countdown-number">3</div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="toast"></div>
+
+    <script src="../static/script.js"></script>
+</body>
+
+</html>

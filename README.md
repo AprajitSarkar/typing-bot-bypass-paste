@@ -17,6 +17,8 @@
 ## 🌟 Features
 
 - **⚡ Variable Typing Speed**: Adjust from 1 to 500 words per second (WPS)
+- **🌏 Bangla Language Support**: Full Unicode support with automatic language detection
+- **🌙 Dark Mode**: Toggle between light and dark themes for comfortable viewing
 - **🎨 Material 3 Design**: Modern, beautiful UI with rounded corners and smooth animations
 - **🔄 Auto-Type**: Automated character-by-character typing to bypass paste restrictions
 - **⏱️ Countdown Timer**: 3-second countdown to position your cursor
@@ -84,15 +86,17 @@ The EXE will be created in the `dist` folder as `TypingBot.exe`
 
 ## 📖 Usage
 
-1. **Enter Text**: Type or paste the text you want to auto-type in the text field
+1. **Enter Text**: Type or paste the text you want to auto-type in the text field (supports English, Bangla, or mixed)
 2. **Set Speed**: Adjust the slider (1-500 WPS) to your desired typing speed
    - 1 WPS = Slow, human-like typing
    - 100 WPS = Fast typing (default)
    - 500 WPS = Ultra-fast typing
 3. **Start Typing**: Press Enter or click "Start" button
 4. **Position Cursor**: During the 3-second countdown, click where you want the text typed
-5. **Auto-Type**: The bot will automatically type your text at the specified speed
+5. **Auto-Type**: The bot will automatically detect and type your text at the specified speed
 6. **Stop Anytime**: Click the "Stop" button to interrupt typing
+
+> **Note**: Language is automatically detected! No need to manually select - just paste your text and go.
 
 ## 🎯 Speed Guide
 
@@ -125,15 +129,42 @@ The EXE will be created in the `dist` folder as `TypingBot.exe`
 pyautogui>=0.9.53
 pillow>=8.3.2
 pynput>=1.7.6
+pyperclip>=1.8.2
 ```
 
 ### How It Works
 
 1. **Speed Calculation**: Converts WPS (Words Per Second) to character delay
    - Formula: `delay = 1.0 / (WPS × 6)`
-2. **Character Typing**: Uses `pyautogui` for keyboard simulation
+2. **Character Typing**: 
+   - **ASCII characters** (English): Uses `pyautogui.write()` for fast, direct typing
+   - **Unicode characters** (Bangla, etc.): Uses clipboard method (`pyperclip` + `Ctrl+V`)
+   - This hybrid approach ensures maximum compatibility and speed
 3. **Special Characters**: Handles newlines, tabs, and spaces correctly
 4. **Thread Safety**: Runs typing in separate thread to keep UI responsive
+
+### Bangla Language Support
+
+The bot now fully supports Bangla (Bengali) Unicode characters with **automatic detection**:
+- **Auto-Detection**: Automatically detects and types Bangla characters - no manual selection needed!
+- **Clipboard Method**: Uses clipboard-based typing for Unicode characters (reliable on all systems)
+- **Unicode Range**: U+0980 to U+09FF (Bangla script)
+- **Font Support**: Uses 'Nirmala UI' on Windows for proper Bangla rendering
+- **Conjunct Support**: Handles complex Bangla conjuncts (যুক্তাক্ষর) like ক্ষ, ঞ্জ, ন্ত্র, etc.
+- **Mixed Content**: Seamlessly types mixed English and Bangla text
+- **Examples**:
+  - Simple: `আমি বাংলায় গান গাই`
+  - With conjuncts: `আমি প্রতিদিন সকালে উঠি না`
+  - Complex: `ক্ষমা করবেন`, `বাংলাদেশ`
+  - Mixed: `Hello আমার নাম is Jitu`
+
+### Dark Mode
+
+Toggle between light and dark themes using the 🌙/☀️ button in the title bar:
+- **Light Mode**: Purple accent with light background (default)
+- **Dark Mode**: Soft purple with dark background for comfortable night usage
+- **Material 3 Colors**: Both themes follow Google's Material 3 design guidelines
+- **Instant Switching**: All UI elements update immediately when toggling
 
 ## 🎨 Material 3 Design
 

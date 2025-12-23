@@ -171,6 +171,23 @@ class FloatingTypingBot:
             'success': '#2E7D32'
         }
         
+        # Dark mode colors (NO white backgrounds, only dark surfaces with light text)
+        self.dark_colors = {
+            'primary': '#BB86FC',           # Light purple for primary elements
+            'primary_container': '#3700B3', # Dark purple for containers
+            'secondary': '#03DAC6',         # Teal accent
+            'tertiary': '#CF6679',          # Pink accent
+            'surface': '#121212',           # Very dark surface
+            'surface_variant': '#2C2C2C',   # Slightly lighter dark surface
+            'background': '#121212',        # Very dark background
+            'error': '#CF6679',             # Pink for errors
+            'on_primary': '#000000',        # Black text on bright primary
+            'on_surface': '#E1E1E1',        # Light gray text on dark surfaces
+            'outline': '#8E8E93',           # Gray outlines
+            'success': '#03DAC6'            # Teal for success
+        }
+        
+        self.is_dark_mode = False
         self.root.configure(bg=self.colors['background'])
         
         # Variables
@@ -213,6 +230,12 @@ class FloatingTypingBot:
                               font=('Segoe UI', 14, 'bold'))
         title_label.pack(side='left', padx=15, pady=10)
         
+        # Dark mode toggle button
+        self.dark_mode_btn = tk.Button(title_bar, text='🌙', bg=self.colors['primary'], 
+                                      fg=self.colors['on_primary'], font=('Segoe UI', 14), 
+                                      bd=0, command=self.toggle_dark_mode, cursor='hand2')
+        self.dark_mode_btn.pack(side='right', padx=5, pady=5, ipadx=8, ipady=2)
+        
         # Close button
         close_btn = tk.Button(title_bar, text='✕', bg=self.colors['error'], 
                              fg='white', font=('Segoe UI', 14, 'bold'), 
@@ -223,9 +246,15 @@ class FloatingTypingBot:
         tk.Label(main_frame, text="Text to Type:", bg=self.colors['surface'],
                 fg=self.colors['on_surface'], font=('Segoe UI', 11, 'bold')).pack(anchor='w', pady=(0, 5))
         
+        # Use a font that supports both English and Bangla
+        try:
+            text_font = ('Nirmala UI', 10)  # Windows font with Bangla support
+        except:
+            text_font = ('Arial Unicode MS', 10)  # Fallback
+        
         self.text_entry = tk.Text(main_frame, height=4, wrap=tk.WORD,
                                  bg=self.colors['surface_variant'], fg=self.colors['on_surface'],
-                                 font=('Segoe UI', 10), bd=0, relief='flat')
+                                 font=text_font, bd=0, relief='flat')
         self.text_entry.pack(fill='both', expand=True, pady=(0, 10))
         self.text_entry.bind('<Return>', lambda e: self.start_countdown())
         self.text_entry.bind('<KeyRelease>', self.update_paste_clear_button)
@@ -301,7 +330,7 @@ class FloatingTypingBot:
         
         # Instructions
         instructions = tk.Label(main_frame,
-                               text="📝 Type/Paste text → Set speed → Press Start → Position cursor",
+                               text="📝 Type/Paste text → Set speed → Press Start → Position cursor (Auto-detects language)",
                                bg=self.colors['primary_container'], 
                                fg=self.colors['on_surface'],
                                font=('Segoe UI', 9), padx=10, pady=8)
@@ -339,6 +368,128 @@ class FloatingTypingBot:
             x = self.root.winfo_x() + event.x - self.offset_x
             y = self.root.winfo_y() + event.y - self.offset_y
             self.root.geometry(f'+{x}+{y}')
+    
+    def toggle_dark_mode(self):
+        """Toggle between light and dark mode"""
+        self.is_dark_mode = not self.is_dark_mode
+        
+        if self.is_dark_mode:
+            # Switch to dark mode
+            self.colors = self.dark_colors.copy()
+            self.dark_mode_btn.config(text='☀️')
+        else:
+            # Switch to light mode
+            self.colors = {
+                'primary': '#6750A4',
+                'primary_container': '#EADDFF',
+                'secondary': '#625B71',
+                'tertiary': '#7D5260',
+                'surface': '#FEF7FF',
+                'surface_variant': '#E7E0EC',
+                'background': '#FEF7FF',
+                'error': '#B3261E',
+                'on_primary': '#FFFFFF',
+                'on_surface': '#1C1B1F',
+                'outline': '#79747E',
+                'success': '#2E7D32'
+            }
+            self.dark_mode_btn.config(text='🌙')
+        
+        # Update all UI elements
+        self.apply_theme()
+    
+    def apply_theme(self):
+        """Apply current theme to all UI elements"""
+        # Update root background
+        self.root.configure(bg=self.colors['background'])
+        
+        # Find and update all child widgets recursively
+        def update_widget(widget):
+            try:
+                widget_type = widget.winfo_class()
+                
+                if widget_type == 'Frame':
+                    if 'bg' in widget.config():
+                        current_bg = str(widget.cget('bg'))
+                        # Map old colors to new colors
+                        if current_bg in ['#FEF7FF', '#1C1B1F']:
+                            widget.config(bg=self.colors['surface'])
+                        elif current_bg in ['#E7E0EC', '#49454F']:
+                            widget.config(bg=self.colors['surface_variant'])
+                        elif current_bg in ['#6750A4', '#D0BCFF']:
+                            widget.config(bg=self.colors['primary'])
+                        elif current_bg in ['#EADDFF', '#4F378B']:
+                            widget.config(bg=self.colors['primary_container'])
+                
+                elif widget_type == 'Label':
+                    if 'bg' in widget.config():
+                        current_bg = str(widget.cget('bg'))
+                        current_fg = str(widget.cget('fg'))
+                        
+                        # Update background
+                        if current_bg in ['#FEF7FF', '#1C1B1F']:
+                            widget.config(bg=self.colors['surface'])
+                        elif current_bg in ['#E7E0EC', '#49454F']:
+                            widget.config(bg=self.colors['surface_variant'])
+                        elif current_bg in ['#6750A4', '#D0BCFF']:
+                            widget.config(bg=self.colors['primary'])
+                        elif current_bg in ['#EADDFF', '#4F378B']:
+                            widget.config(bg=self.colors['primary_container'])
+                        
+                        # Update foreground
+                        if current_fg in ['#1C1B1F', '#E6E1E5']:
+                            widget.config(fg=self.colors['on_surface'])
+                        elif current_fg in ['#FFFFFF', '#371E73']:
+                            widget.config(fg=self.colors['on_primary'])
+                        elif current_fg in ['#6750A4', '#D0BCFF']:
+                            widget.config(fg=self.colors['primary'])
+                        elif current_fg in ['#79747E', '#938F99']:
+                            widget.config(fg=self.colors['outline'])
+                
+                elif widget_type == 'Text':
+                    widget.config(bg=self.colors['surface_variant'], fg=self.colors['on_surface'])
+                
+                elif widget_type == 'Button':
+                    if 'bg' in widget.config():
+                        current_bg = str(widget.cget('bg'))
+                        if current_bg in ['#6750A4', '#D0BCFF']:
+                            widget.config(bg=self.colors['primary'], fg=self.colors['on_primary'])
+                        elif current_bg in ['#B3261E', '#F2B8B5']:
+                            widget.config(bg=self.colors['error'])
+                
+                # Update dark mode button
+                if hasattr(self, 'dark_mode_btn') and widget == self.dark_mode_btn:
+                    widget.config(bg=self.colors['primary'], fg=self.colors['on_primary'])
+                
+                # Recursively update children
+                for child in widget.winfo_children():
+                    update_widget(child)
+                    
+            except:
+                pass
+        
+        update_widget(self.root)
+        
+        # Update custom rounded buttons
+        if hasattr(self, 'start_btn'):
+            self.start_btn.bg_color = self.colors['primary']
+            self.start_btn.hover_color = '#5046A3' if not self.is_dark_mode else '#B8A4E5'
+            self.start_btn.draw_button(self.start_btn.bg_color)
+        
+        if hasattr(self, 'stop_btn'):
+            self.stop_btn.bg_color = self.colors['error']
+            self.stop_btn.hover_color = '#8B0000' if not self.is_dark_mode else '#F5C6C4'
+            self.stop_btn.draw_button(self.stop_btn.bg_color)
+        
+        if hasattr(self, 'pause_btn'):
+            self.pause_btn.bg_color = self.colors['tertiary']
+            self.pause_btn.hover_color = '#6A4653' if not self.is_dark_mode else '#F5CAD4'
+            self.pause_btn.draw_button(self.pause_btn.bg_color)
+        
+        if hasattr(self, 'paste_clear_btn'):
+            self.paste_clear_btn.bg_color = self.colors['secondary']
+            self.paste_clear_btn.hover_color = '#524963' if not self.is_dark_mode else '#D8CEEA'
+            self.paste_clear_btn.draw_button(self.paste_clear_btn.bg_color)
     
     def on_escape_key(self, event):
         if self.is_typing:
@@ -508,6 +659,9 @@ class FloatingTypingBot:
         popup.after(2000, popup.destroy)
     
     def type_text(self, text, x, y):
+        from pynput.keyboard import Controller, Key
+        keyboard = Controller()
+        
         pyautogui.click(x, y)
         time.sleep(0.1)
         
@@ -548,13 +702,22 @@ class FloatingTypingBot:
             ))
             
             if char == '\n':
-                pyautogui.press('enter')
+                keyboard.press(Key.enter)
+                keyboard.release(Key.enter)
             elif char == '\t':
-                pyautogui.press('tab')
+                keyboard.press(Key.tab)
+                keyboard.release(Key.tab)
             elif char == ' ':
-                pyautogui.press('space')
+                keyboard.press(Key.space)
+                keyboard.release(Key.space)
             else:
-                pyautogui.typewrite(char, interval=0)
+                # Use pynput for ALL characters - it handles Unicode properly
+                # No clipboard needed!
+                try:
+                    keyboard.type(char)
+                except Exception as e:
+                    # Fallback for very special characters
+                    print(f"Could not type character: {char}")
             
             time.sleep(delay)
         
