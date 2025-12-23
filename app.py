@@ -106,6 +106,11 @@ def start_flask():
 if __name__ == '__main__':
     import json
     import os
+    import sys
+    
+    # Fix encoding for Windows
+    if sys.platform == 'win32':
+        sys.stdout.reconfigure(encoding='utf-8')
     
     # Start Flask in background thread
     flask_thread = threading.Thread(target=start_flask, daemon=True)
@@ -127,12 +132,12 @@ if __name__ == '__main__':
     else:
         config = default_config
     
-    print("🚀 TypingBot - Material Design UI")
-    print("📱 Opening floating window...")
+    print("TypingBot - Material Design UI")
+    print("Opening floating window...")
     
     # Create desktop window with Material UI
     window = webview.create_window(
-        '⌨️ TypingBot - Bypass Text Pasting',
+        'TypingBot - Bypass Text Pasting',
         'http://localhost:5000',
         width=config['width'],
         height=config['height'],
