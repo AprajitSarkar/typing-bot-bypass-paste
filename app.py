@@ -9,6 +9,11 @@ import os
 
 app = Flask(__name__)
 
+# Embedded version info (prevents manual editing after exe build)
+APP_VERSION = "2.0.1"
+APP_VERSION_NAME = "Material UI Edition - Dark Mode Default"
+APP_RELEASE_DATE = "2025-12-24"
+
 # Global state
 typing_state = {
     'is_typing': False,
@@ -103,23 +108,27 @@ def stop_typing():
 
 @app.route('/api/version', methods=['GET'])
 def get_version():
-    """Return current version information"""
-    try:
-        with open('version.json', 'r', encoding='utf-8') as f:
-            version_data = json.load(f)
-        return jsonify(version_data)
-    except:
-        return jsonify({
-            'current_version': '2.0.0',
-            'version_name': 'Material UI Edition'
-        })
+    """Return current version information (embedded, not from file)"""
+    return jsonify({
+        'current_version': APP_VERSION,
+        'version_name': APP_VERSION_NAME,
+        'release_date': APP_RELEASE_DATE,
+        'features': [
+            'Bangla Language Support',
+            'Material Design 3 UI',
+            'Dark Mode (Default)',
+            'Settings Persistence',
+            'Live Text Highlighting',
+            'Clipboard Protection'
+        ]
+    })
 
 @app.route('/api/settings', methods=['GET'])
 def get_settings():
     """Load user settings from file"""
     settings_file = 'user_settings.json'
     default_settings = {
-        'darkMode': False,
+        'darkMode': True,  # Dark mode enabled by default
         'speed': 100,
         'lastText': ''
     }
@@ -148,66 +157,9 @@ def save_settings():
 
 
 def check_version():
-    """Check if the app version is up to date"""
-    import os
-    
-    if not os.path.exists('version.json'):
-        print("WARNING: version.json not found. Creating default version file...")
-        default_version = {
-            "current_version": "2.0.0",
-            "version_name": "Material UI Edition",
-            "release_date": "2025-12-24"
-        }
-        with open('version.json', 'w', encoding='utf-8') as f:
-            json.dump(default_version, f, indent=4)
-        return True
-    
-    try:
-        with open('version.json', 'r', encoding='utf-8') as f:
-            version_data = json.load(f)
-        
-        current_version = version_data.get('current_version', '0.0.0')
-        
-        # Expected version
-        expected_version = "2.0.0"
-        
-        if current_version != expected_version:
-            print(f"\nVERSION MISMATCH!")
-            print(f"Current version: {current_version}")
-            print(f"Expected version: {expected_version}")
-            print(f"\nPlease update TypingBot to version {expected_version}")
-            print("Download the latest version and replace the old files.\n")
-            
-            # Show GUI dialog
-            import tkinter as tk
-            from tkinter import messagebox
-            
-            root = tk.Tk()
-            root.withdraw()
-            
-            result = messagebox.askokcancel(
-                "Update Required",
-                f"TypingBot version mismatch!\n\n"
-                f"Current: {current_version}\n"
-                f"Required: {expected_version}\n\n"
-                f"Please update to the latest version.\n\n"
-                f"Click OK to exit and update, or Cancel to continue anyway (not recommended)."
-            )
-            
-            root.destroy()
-            
-            if result:  # User clicked OK to exit
-                return False
-            else:  # User clicked Cancel to continue
-                print("WARNING: Continuing with outdated version. This may cause issues.\n")
-                return True
-        
-        print(f"TypingBot v{current_version} - {version_data.get('version_name', 'Material UI Edition')}")
-        return True
-        
-    except Exception as e:
-        print(f"Error checking version: {e}")
-        return True
+    """Version info is now embedded in code - always returns True"""
+    print(f"TypingBot v{APP_VERSION} - {APP_VERSION_NAME}")
+    return True
 
 def start_flask():
     app.run(port=5000, debug=False, use_reloader=False)
@@ -250,7 +202,7 @@ if __name__ == '__main__':
     
     # Create desktop window with Material UI
     window = webview.create_window(
-        'TypingBot v2.0 - Bypass Text Pasting',
+        f'TypingBot v{APP_VERSION} - Bypass Text Pasting',
         'http://localhost:5000',
         width=config['width'],
         height=config['height'],
